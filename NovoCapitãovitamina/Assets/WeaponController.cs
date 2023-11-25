@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class WeaponController : MonoBehaviour
 {
     public List<Transform> firePoints;
     
     public Camera mainCamera;
+    [SerializeField] private ParticleSystem leite;
+    [SerializeField] PlayerMovement player;
     public GameObject projectilePrefab;
     public float projectileSpeed = 10f;
     public int numeroTiros = 3;
@@ -32,14 +35,22 @@ public class WeaponController : MonoBehaviour
             SetWeaponDirection(direction);
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && player.armaAtual == 1)
         {
             DispararTiros();
         }
-        else if (Input.GetButtonDown("Fire2"))
+        else if(Input.GetButtonUp("Fire1") && player.armaAtual == 1)
         {
-            DispararTirosExplosivos();
+
         }
+        if (Input.GetButtonDown("Fire1") && player.armaAtual == 0)
+        {
+            leite.Play();
+        }
+        else if(Input.GetButtonUp("Fire1") && player.armaAtual == 0)
+            
+            leite.Stop();
+
     }
 
  
@@ -103,7 +114,7 @@ public class WeaponController : MonoBehaviour
             {
                 GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
                 Rigidbody projectileRigidbody = projectileGO.GetComponent<Rigidbody>();
-                projectileRigidbody.AddForce(firePoint.right * projectileSpeed, ForceMode.Impulse);
+                projectileRigidbody.AddForce(-firePoint.forward * projectileSpeed, ForceMode.Impulse);
 
                 
             }
@@ -119,16 +130,16 @@ public class WeaponController : MonoBehaviour
     {
         for (int i = 0; i < numeroTiros; i++)
         {
-            foreach (Transform firePoint in firePoints)
-            {
-                GameObject explosiveProjectileGO = Instantiate(explosiveProjectilePrefab, firePoint.position, firePoint.rotation);
-                Rigidbody explosiveProjectileRigidbody = explosiveProjectileGO.GetComponent<Rigidbody>();
-                explosiveProjectileRigidbody.AddForce(firePoint.right * projectileSpeed, ForceMode.Impulse);
-            }
-
+            //foreach (Transform firePoint in firePoints)
+            //{
+            //    GameObject explosiveProjectileGO = Instantiate(explosiveProjectilePrefab, firePoint.position, firePoint.rotation);
+            //    Rigidbody explosiveProjectileRigidbody = explosiveProjectileGO.GetComponent<Rigidbody>();
+            //    explosiveProjectileRigidbody.AddForce(firePoint.right * projectileSpeed, ForceMode.Impulse);
+            //}
+            leite.Play();
             yield return new WaitForSeconds(intervaloTiros);
         }
-
+        leite.Pause();
         isFiring = false;
     }
 }

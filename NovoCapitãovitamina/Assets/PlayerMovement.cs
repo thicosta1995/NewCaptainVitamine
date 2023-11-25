@@ -58,10 +58,7 @@ public class PlayerMovement : MonoBehaviour
         {
             TrocarArma();
         }
-      if(armaAtual ==1)
-        {
-            leite.Play();
-        }
+     
     }
 
     void TrocarArma()

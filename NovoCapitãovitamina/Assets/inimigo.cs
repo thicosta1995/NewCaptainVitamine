@@ -194,7 +194,7 @@ public class inimigo : MonoBehaviour
 
         if (tipoInimigo[0].name == "Z.B")
         {
-            if (other.tag == "B")
+            if (other.gameObject.layer == 7)
             {
                 if (VidaInimigo >= 0)
                 {
