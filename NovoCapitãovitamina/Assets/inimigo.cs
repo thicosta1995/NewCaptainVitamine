@@ -127,7 +127,7 @@ public class inimigo : MonoBehaviour
                 }
             }
         }
-    
+
     }
 
     // Restante do código...
@@ -192,18 +192,7 @@ public class inimigo : MonoBehaviour
             }
         }
 
-        if (tipoInimigo[0].name == "Z.B")
-        {
-            if (other.gameObject.layer == 7)
-            {
-                if (VidaInimigo >= 0)
-                {
-                    VidaInimigo = VidaInimigo - 10;
-                }
 
-                Destroy(other.gameObject);
-            }
-        }
 
         if (tipoInimigo[0].name == "Z.A")
         {
@@ -215,6 +204,21 @@ public class inimigo : MonoBehaviour
                 }
 
                 Destroy(other.gameObject);
+            }
+        }
+    }
+    private void OnParticleCollision(GameObject other)
+    {
+        if (tipoInimigo[0].name == "Z.B")
+        {
+            if (other.gameObject.layer == 7)
+            {
+                if (VidaInimigo >= 0)
+                {
+                    VidaInimigo = VidaInimigo - 1;
+                }
+
+               
             }
         }
     }
