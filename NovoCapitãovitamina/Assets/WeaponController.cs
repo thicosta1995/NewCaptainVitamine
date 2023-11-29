@@ -15,17 +15,31 @@ public class WeaponController : MonoBehaviour
     public int numeroTiros = 3;
     public float intervaloTiros = 0.1f;
     public GameObject explosiveProjectilePrefab;
+    [SerializeField] private int municaoDeLaraja;
+    [SerializeField] private int municaoDeLarajaMax= 300;
+    public bool recarregandoAlaranja;
+    public bool semLaranja;
     private bool isFiring; // Indica se a arma está atirando
     public GameObject[] armas; // Um array de GameObjects representando suas diferentes armas.
     private int armaAtual = 0; // O índice da arma atual.
 
-   
+
+    private void Start()
+    {
+        municaoDeLaraja = municaoDeLarajaMax;
+        semLaranja = false;
+        recarregandoAlaranja = false;
+    }
     private void Update()
     {
       
         Vector3 mousePositionScreen = Input.mousePosition;
 
         Ray ray = mainCamera.ScreenPointToRay(mousePositionScreen);
+        if(municaoDeLaraja <=0)
+        {
+            semLaranja = true;
+        }
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -35,7 +49,7 @@ public class WeaponController : MonoBehaviour
             SetWeaponDirection(direction);
         }
 
-        if (Input.GetButtonDown("Fire1") && player.armaAtual == 1)
+        if (Input.GetButtonDown("Fire1") && player.armaAtual == 1 && municaoDeLaraja >= 0)
         {
             DispararTiros();
         }
@@ -50,7 +64,12 @@ public class WeaponController : MonoBehaviour
         else if(Input.GetButtonUp("Fire1") && player.armaAtual == 0)
             
             leite.Stop();
-
+        if(recarregandoAlaranja == true)
+        {
+            municaoDeLaraja = municaoDeLarajaMax;
+            semLaranja = false;
+            recarregandoAlaranja = false;
+        }
     }
 
  
@@ -115,8 +134,9 @@ public class WeaponController : MonoBehaviour
                 GameObject projectileGO = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
                 Rigidbody projectileRigidbody = projectileGO.GetComponent<Rigidbody>();
                 projectileRigidbody.AddForce(-firePoint.forward * projectileSpeed, ForceMode.Impulse);
+                municaoDeLaraja = municaoDeLaraja - 15;
 
-                
+
             }
 
             yield return new WaitForSeconds(intervaloTiros);

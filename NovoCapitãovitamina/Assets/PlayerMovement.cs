@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpSpeed;
     public float timeToPeak =1f;
     public float Hp;
+    public WeaponController arma;
     public Text Hptx;
     public GameObject[] armas; // Um array de GameObjects representando suas diferentes armas.
     public int armaAtual = 0; // O índice da arma atual.
@@ -156,6 +157,12 @@ public class PlayerMovement : MonoBehaviour
         {
             Hp = Hp - 20;
         }
-       
+        if (other.gameObject.CompareTag("CaixaLaranja"))
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                arma.recarregandoAlaranja = true;
+            }
+        }
     }
 }
