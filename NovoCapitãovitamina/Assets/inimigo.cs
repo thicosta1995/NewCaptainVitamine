@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 public class inimigo : MonoBehaviour
 {
+
+
+
     private NavMeshAgent agent;
     public Transform jogador;
     public float distanciaParaAndarRapido = 10.0f;
@@ -18,7 +21,6 @@ public class inimigo : MonoBehaviour
     public float duracaoDaDeslizada = 0.5f;
     public GameObject[] tipoInimigo;
     public float VidaInimigo;
-    public bool inimigoParado;
     private float tempoUltimoAtaque;
     private bool atacando;
     private bool deslizando;
@@ -28,9 +30,6 @@ public class inimigo : MonoBehaviour
     public Transform pontoB;
     public float distanciaDePatrulha = 1.0f;
 
-    private Transform pontoPatrulhaAtual;
-    private bool indoParaPontoA = true;
-
     private bool emPerseguicao = false;
 
     [SerializeField] private GameObject Hamburger;
@@ -38,15 +37,13 @@ public class inimigo : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        pontoPatrulhaAtual = pontoA;
-        inimigoParado = true;
-        tipoInimigo[0].SetActive(true);
         agent.SetDestination(pontoA.position);
+           tipoInimigo[0].SetActive(true);// Começa a patrulha no ponto A
     }
 
     void Update()
     {
-        morte();
+        Morte();
         if (jogador != null && !atacando)
         {
             float distanciaJogador = Vector3.Distance(transform.position, jogador.position);
@@ -54,85 +51,59 @@ public class inimigo : MonoBehaviour
             RaycastHit hit;
             Vector3 directionToPlayer = jogador.position - transform.position;
 
-            // Sempre manter o Raycast ativo
             Debug.DrawRay(transform.position, directionToPlayer * distanciaParado, Color.red);
             if (Physics.Raycast(transform.position, directionToPlayer, out hit, Mathf.Infinity))
             {
                 if (hit.collider.CompareTag("Jogador"))
                 {
-                    // Se o jogador estiver à vista, atacar
                     if (distanciaJogador <= distanciaParaAtaque && Time.time - tempoUltimoAtaque > tempoDeAtaque)
                     {
                         AtacarJogador();
                         tempoUltimoAtaque = Time.time;
-                        emPerseguicao = true; // Inicia a perseguição quando ataca
-                        agent.isStopped = false; // Garante que o agente não está parado durante a perseguição
+                        emPerseguicao = true;
+                        agent.isStopped = false;
                         Debug.Log("Inimigo em perseguição!");
                     }
 
                     // Atualiza o ponto de patrulha atual para o jogador
-                    pontoPatrulhaAtual = jogador;
+                    agent.SetDestination(jogador.position);
                 }
             }
 
-            if (emPerseguicao == true)
+            if (emPerseguicao)
             {
-                // Se em perseguição, persegue o jogador
+                // Persegue o jogador
                 agent.SetDestination(jogador.position);
 
-                // Se a distância entre o inimigo e o jogador for grande, encerra a perseguição
+                // Encerra a perseguição se a distância for grande
                 if (distanciaJogador > distanciaParaAndarRapido)
                 {
                     emPerseguicao = false;
-                    agent.isStopped = false;
+                    agent.isStopped = true;
                     Debug.Log("Perseguição encerrada. Retornando à patrulha.");
                 }
             }
             else
             {
-                // Se não estiver em perseguição, continua usando pontos de patrulha
-                if (distanciaJogador > distanciaParaAndarRapido && distanciaJogador <= distanciaParado)
-                {
-                    if (Physics.Raycast(transform.position, directionToPlayer, out hit, distanciaParado))
-                    {
-                        if (hit.collider.CompareTag("Parede"))
-                        {
-                            Vector3 newDirection =
-                                Vector3.RotateTowards(transform.forward, hit.normal, Time.deltaTime * 2.0f, 0.0f);
-                            transform.rotation = Quaternion.LookRotation(newDirection);
-                            agent.isStopped = true;
-                        }
-                        else
-                        {
-                            agent.isStopped = false;
-                        }
-                    }
-                }
-
+                // Continua patrulhando entre os pontos A e B
                 if (!agent.pathPending && agent.remainingDistance < 0.5f)
                 {
-                    // Continua patrulhando entre os pontos A e B
-                    if (pontoPatrulhaAtual == pontoA)
+                    if (Vector3.Distance(transform.position, pontoA.position) < Vector3.Distance(transform.position, pontoB.position))
                     {
                         agent.SetDestination(pontoB.position);
-                        pontoPatrulhaAtual = pontoB;
                         Debug.Log("Chegou ao ponto A. Indo para o ponto B.");
                     }
                     else
                     {
                         agent.SetDestination(pontoA.position);
-                        pontoPatrulhaAtual = pontoA;
                         Debug.Log("Chegou ao ponto B. Indo para o ponto A.");
                     }
                 }
             }
         }
-
     }
 
-    // Restante do código...
-
-    void morte()
+    void Morte()
     {
         if (VidaInimigo <= 0)
         {
@@ -149,6 +120,26 @@ public class inimigo : MonoBehaviour
         // Lógica de ataque aqui
         // Quando o ataque estiver concluído, reative o NavMesh Agent e termine o ataque
     }
+    //IEnumerator AguardarPatrulha()
+    //{
+    //    aguardandoPatrulha = true;
+    //    yield return new WaitForSeconds(2.0f); // Tempo de espera antes de retomar a patrulha
+    //    agent.isStopped = false;
+    //    aguardandoPatrulha = false;
+
+    //    // Continua patrulhando entre os pontos A e B
+    //    if (Vector3.Distance(transform.position, pontoA.position) < Vector3.Distance(transform.position, pontoB.position))
+    //    {
+    //        agent.SetDestination(pontoB.position);
+    //        Debug.Log("Chegou ao ponto A. Indo para o ponto B.");
+    //    }
+    //    else
+    //    {
+    //        agent.SetDestination(pontoA.position);
+    //        Debug.Log("Chegou ao ponto B. Indo para o ponto A.");
+    //    }
+    //}
+
 
     void Deslizar()
     {
