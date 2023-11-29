@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class inimigo : MonoBehaviour
 {
 
 
 
+    [SerializeField] private Slider slide;
+    [SerializeField] private float maxHP;
     private NavMeshAgent agent;
     public Transform jogador;
     public float distanciaParaAndarRapido = 10.0f;
@@ -25,7 +28,7 @@ public class inimigo : MonoBehaviour
     private bool atacando;
     private bool deslizando;
     private Vector3 deslizadaTarget;
-
+   public BarraHpFlutuante VidaBarra;
     public Transform pontoA;
     public Transform pontoB;
     public float distanciaDePatrulha = 1.0f;
@@ -38,11 +41,21 @@ public class inimigo : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         agent.SetDestination(pontoA.position);
-           tipoInimigo[0].SetActive(true);// Começa a patrulha no ponto A
+        VidaInimigo = maxHP;
+        tipoInimigo[0].SetActive(true);
+        VidaBarra = GetComponentInChildren<BarraHpFlutuante>();
+        VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
+        tipoInimigo[0].SetActive(true);// Começa a patrulha no ponto A
     }
 
     void Update()
     {
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            VidaInimigo = VidaInimigo - 10;
+            VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
+        }
         Morte();
         if (jogador != null && !atacando)
         {
@@ -177,6 +190,7 @@ public class inimigo : MonoBehaviour
                 if (VidaInimigo >= 0)
                 {
                     VidaInimigo = VidaInimigo - 10;
+                    VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
                 }
 
                 Destroy(other.gameObject);
@@ -192,7 +206,9 @@ public class inimigo : MonoBehaviour
                 if (VidaInimigo >= 0)
                 {
                     VidaInimigo = VidaInimigo - 10;
+                    VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
                 }
+
 
                 Destroy(other.gameObject);
             }
@@ -206,10 +222,11 @@ public class inimigo : MonoBehaviour
             {
                 if (VidaInimigo >= 0)
                 {
-                    VidaInimigo = VidaInimigo - 1;
+                    VidaInimigo = VidaInimigo - 10;
+                    VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
                 }
 
-               
+
             }
         }
     }
