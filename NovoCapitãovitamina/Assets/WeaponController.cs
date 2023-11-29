@@ -9,6 +9,10 @@ public class WeaponController : MonoBehaviour
     
     public Camera mainCamera;
     [SerializeField] private ParticleSystem leite;
+    [SerializeField] private float municaoDeLeite;
+    [SerializeField] private float municaoDeLeiteMax= 10000;
+    public bool semLeite;
+    public bool recarregarLeite;
     [SerializeField] PlayerMovement player;
     public GameObject projectilePrefab;
     public float projectileSpeed = 10f;
@@ -29,6 +33,9 @@ public class WeaponController : MonoBehaviour
         municaoDeLaraja = municaoDeLarajaMax;
         semLaranja = false;
         recarregandoAlaranja = false;
+        municaoDeLeite = municaoDeLeiteMax;
+        semLeite = false;
+        recarregarLeite = false;
     }
     private void Update()
     {
@@ -40,7 +47,10 @@ public class WeaponController : MonoBehaviour
         {
             semLaranja = true;
         }
-
+        if(municaoDeLeite <= 0) 
+        {
+            semLeite = true;
+        }
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 direction = hit.point - transform.position;
@@ -49,7 +59,7 @@ public class WeaponController : MonoBehaviour
             SetWeaponDirection(direction);
         }
 
-        if (Input.GetButtonDown("Fire1") && player.armaAtual == 1 && municaoDeLaraja >= 0)
+        if (Input.GetButtonDown("Fire1") && player.armaAtual == 1 && municaoDeLaraja > 0)
         {
             DispararTiros();
         }
@@ -57,19 +67,28 @@ public class WeaponController : MonoBehaviour
         {
 
         }
-        if (Input.GetButtonDown("Fire1") && player.armaAtual == 0)
+        if (Input.GetButtonDown("Fire1") && player.armaAtual == 0 && municaoDeLeite >0)
         {
             leite.Play();
+           
+           
         }
         else if(Input.GetButtonUp("Fire1") && player.armaAtual == 0)
-            
-            leite.Stop();
+              leite.Stop();
         if(recarregandoAlaranja == true)
         {
             municaoDeLaraja = municaoDeLarajaMax;
             semLaranja = false;
             recarregandoAlaranja = false;
         }
+        if(recarregarLeite == true)
+        {
+            municaoDeLeite = municaoDeLeiteMax;
+            semLeite = false;
+            recarregarLeite = false;
+        }
+
+        animaçãoLeite();
     }
 
  
@@ -124,7 +143,18 @@ public class WeaponController : MonoBehaviour
             StartCoroutine(DispararTirosExplosivosCoroutine());
         }
     }
+    void animaçãoLeite()
 
+    {
+        if(leite.isPlaying && municaoDeLeite>=0)
+        {
+            municaoDeLeite = municaoDeLeite - 1;
+        }
+        else if(municaoDeLeite<=0)
+        {
+            leite.Stop();
+        }
+    }
     IEnumerator DispararTirosCoroutine()
     {
         for (int i = 0; i < numeroTiros; i++)
@@ -156,10 +186,9 @@ public class WeaponController : MonoBehaviour
             //    Rigidbody explosiveProjectileRigidbody = explosiveProjectileGO.GetComponent<Rigidbody>();
             //    explosiveProjectileRigidbody.AddForce(firePoint.right * projectileSpeed, ForceMode.Impulse);
             //}
-            leite.Play();
             yield return new WaitForSeconds(intervaloTiros);
         }
-        leite.Pause();
+        
         isFiring = false;
     }
 }

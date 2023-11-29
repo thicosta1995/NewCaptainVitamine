@@ -11,6 +11,8 @@ TagManager:
   - Parede
   - D
   - Jogador
+  - CaixaLaranja
+  - CaixaLeite
   layers:
   - Default
   - TransparentFX
