@@ -8,6 +8,7 @@ public class WeaponController : MonoBehaviour
     public List<Transform> firePoints;
     
     public Camera mainCamera;
+    [SerializeField] private Transform Player;
     [SerializeField] private ParticleSystem leite;
     [SerializeField] private float municaoDeLeite;
     [SerializeField] private float municaoDeLeiteMax= 10000;
@@ -96,7 +97,7 @@ public class WeaponController : MonoBehaviour
     {
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
+  
     }
 
     //void SetWeaponDirectionUp(Vector3 direction)

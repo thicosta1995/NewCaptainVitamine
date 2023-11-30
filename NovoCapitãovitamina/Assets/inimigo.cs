@@ -51,11 +51,7 @@ public class inimigo : MonoBehaviour
     void Update()
     {
 
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            VidaInimigo = VidaInimigo - 10;
-            VidaBarra.UpDateHealhBar(VidaInimigo, maxHP);
-        }
+       
         Morte();
         if (jogador != null && !atacando)
         {

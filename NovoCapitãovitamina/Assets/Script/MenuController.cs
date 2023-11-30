@@ -10,6 +10,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private string nomeDoLevelDoJogo;
     [SerializeField] private GameObject PainelMenuPrincipal;
     [SerializeField] private GameObject painelOpcoes;
+  
 
     public void Jogar()
     {

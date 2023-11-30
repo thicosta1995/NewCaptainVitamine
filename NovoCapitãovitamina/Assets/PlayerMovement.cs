@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public float Hp;
     public WeaponController armaLaranja;
     public WeaponController armaLeite;
+    public bool Ispouse;
     public Text Hptx;
     public GameObject[] armas; // Um array de GameObjects representando suas diferentes armas.
     public int armaAtual = 0; // O índice da arma atual.
@@ -89,48 +90,48 @@ public class PlayerMovement : MonoBehaviour
         //{
         //    Jump();
         //}
-        float xInput = Input.GetAxis("Horizontal");
-        xVelocity = moveSpeed * xInput * Vector3.right;
+        //float xInput = Input.GetAxis("Horizontal");
+        //xVelocity = moveSpeed * xInput * Vector3.right;
 
-        yVelocity += gravity * Time.deltaTime * Vector3.down;
-        if (controle.isGrounded)
-        {
-            yVelocity = Vector3.down;
-        }
+        //yVelocity += gravity * Time.deltaTime * Vector3.down;
+        //if (controle.isGrounded)
+        //{
+        //    yVelocity = Vector3.down;
+        //}
 
-        if (Input.GetKeyDown(KeyCode.W) && controle.isGrounded)
-        {
-            yVelocity = jumpSpeed * Vector3.up;
-        }
-        finalVelocity = -xVelocity + yVelocity;
-        controle.Move(finalVelocity * Time.deltaTime);
-        Hptx.text = Hp.ToString();
+        //if (Input.GetKeyDown(KeyCode.W) && controle.isGrounded)
+        //{
+        //    yVelocity = jumpSpeed * Vector3.up;
+        //}
+        //finalVelocity = -xVelocity + yVelocity;
+        //controle.Move(finalVelocity * Time.deltaTime);
+        //Hptx.text = Hp.ToString();
     }
 
-    private void Move(float inputValue)
-    {
-        Vector3 movement = new Vector3(inputValue * moveSpeed , 0f, 0f);
-        rb.MovePosition(transform.position + movement);
-    }
+    //private void Move(float inputValue)
+    //{
+    //    Vector3 movement = new Vector3(inputValue * moveSpeed , 0f, 0f);
+    //    rb.MovePosition(transform.position + movement);
+    //}
 
-    private void Jump()
-    {
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-        isJumping = true;
-    }
+    //private void Jump()
+    //{
+    //    rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+    //    isJumping = true;
+    //}
 
-    private bool IsGrounded()
-    {
-        RaycastHit hit;
-        float raycastDistance = 1f; // Aumentamos a distância do raio para garantir que atinja o chão adequadamente
-        Vector3 raycastOrigin = transform.position + Vector3.up * 0.1f; // Adicionamos uma pequena elevação ao ponto de origem do raio para evitar colisões imediatas
-        if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, raycastDistance))
-        {
-            isJumping = false;
-            return true;
-        }
-        return false;
-    }
+    //private bool IsGrounded()
+    //{
+    //    RaycastHit hit;
+    //    float raycastDistance = 1f; // Aumentamos a distância do raio para garantir que atinja o chão adequadamente
+    //    Vector3 raycastOrigin = transform.position + Vector3.up * 0.1f; // Adicionamos uma pequena elevação ao ponto de origem do raio para evitar colisões imediatas
+    //    if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, raycastDistance))
+    //    {
+    //        isJumping = false;
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
     private void OnCollisionEnter(Collision collision)
     {
